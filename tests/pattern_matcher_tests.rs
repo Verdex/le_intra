@@ -5,6 +5,6 @@ mod test {
 
     #[test]
     fn should() {
-        pattern_matcher!()
+        pattern_matcher!(*)
     }
 }
