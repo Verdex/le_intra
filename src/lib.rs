@@ -5,8 +5,8 @@ use proc_macro::*;
 
 use parser::Error;
 
-pub (crate) enum PMAst {
-    Remove
+pub (crate) struct PMAst<'a> {
+    func_name : &'a TokenTree,
 }
 
 #[proc_macro]
