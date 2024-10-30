@@ -5,8 +5,7 @@ use proc_macro::*;
 
 use parser::Error;
 
-pub (crate) struct PMAst<'a> {
-    func_name : &'a TokenTree,
+pub (crate) struct PMAst {
 }
 
 #[proc_macro]

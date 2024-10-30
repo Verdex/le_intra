@@ -10,11 +10,13 @@ pub (crate) type PResult<'a, T> = Result<(&'a [TokenTree], T, Span), Error>;
 pub (crate) fn parse_pattern_matcher(input : &[TokenTree], prev : Span) -> Result<PMAst, Error> {
     let next = input;
 
-    let (next, func_name, prev) = parse_return_bracket(next, prev)?;
-    let (next, _, prev) = parse_comma(next, prev)?;
+    let (next, type_bracket, prev) = parse_type_bracket(next, prev)?;
+    let (next, _, prev) = parse_semicolon(next, prev)?;
+    let (next, return_bracket, prev) = parse_return_bracket(next, prev)?;
+    //let (next, _, prev) = parse_comma(next, prev)?;
 
 
-    Ok(PMAst { func_name })
+    Ok(PMAst { })
 }
 
 fn parse_ident<'a>(input : &'a [TokenTree], prev : Span) -> PResult<'a, &'a TokenTree> {
@@ -61,7 +63,7 @@ fn parse_return_bracket<'a>( input : &'a [TokenTree], prev : Span ) -> PResult<'
     }
 }
 
-fn parse_type_bracket<'a>( input : &'a [TokenTree], prev : Span ) -> PResult<'a, TokenTree> {
+fn parse_type_bracket<'a>( input : &'a [TokenTree], prev : Span ) -> PResult<'a, Box<str>> {
     match input {
         [TokenTree::Group(g), rest @ ..] if g.delimiter() == Delimiter::Bracket
             => Ok((rest, g.stream().to_string().into(), g.span())),
