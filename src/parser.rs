@@ -10,7 +10,7 @@ pub (crate) type PResult<'a, T> = Result<(&'a [TokenTree], T, Span), Error>;
 pub (crate) fn parse_pattern_matcher(input : &[TokenTree], prev : Span) -> Result<PMAst, Error> {
     let next = input;
 
-    let (next, func_name, prev) = parse_ident(next, prev)?;
+    let (next, func_name, prev) = parse_return_bracket(next, prev)?;
     let (next, _, prev) = parse_comma(next, prev)?;
 
 
@@ -61,16 +61,15 @@ fn parse_return_bracket<'a>( input : &'a [TokenTree], prev : Span ) -> PResult<'
     }
 }
 
-/*
 fn parse_type_bracket<'a>( input : &'a [TokenTree], prev : Span ) -> PResult<'a, TokenTree> {
-    match input.input() {
+    match input {
         [TokenTree::Group(g), rest @ ..] if g.delimiter() == Delimiter::Bracket
-            => Ok((Pattern::new(g.stream().to_string()), Input::new(rest, g.span()))),
-        [x, ..] => Err(Error::new(x.span(), "expected '[ <Group> ]'".to_owned())),
-        [] => input.end_of_stream(),
+            => Ok((rest, g.stream().to_string().into(), g.span())),
+        [x, ..] => Err(Error(x.span(), vec!["expected '[ pattern ]'".into()])),
+        [] => Err(Error(prev, vec!["unexpected end of stream".into()])),
     }
 }
-*/
+
 /*
 
 // intra 1
