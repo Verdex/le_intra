@@ -8,6 +8,11 @@ use parser::Error;
 pub (crate) struct PMAst {
 }
 
+pub (crate) struct Pattern {
+    pub (crate) p : Box<str>,
+    pub (crate) nexts : Vec<Box<str>>,
+}
+
 #[proc_macro]
 pub fn pattern_matcher( input : TokenStream ) -> TokenStream {
     let input = input.into_iter().collect::<Vec<_>>();
@@ -26,7 +31,7 @@ pub fn pattern_matcher( input : TokenStream ) -> TokenStream {
 
             error_code.into_iter().collect()
         },
-        _ => todo!(),
+        _ => "".parse().unwrap(),
     }
 }
 

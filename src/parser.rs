@@ -1,5 +1,5 @@
 
-use super::PMAst;
+use super::{ PMAst, Pattern };
 
 use proc_macro::*;
 
@@ -10,13 +10,35 @@ pub (crate) type PResult<'a, T> = Result<(&'a [TokenTree], T, Span), Error>;
 pub (crate) fn parse_pattern_matcher(input : &[TokenTree], prev : Span) -> Result<PMAst, Error> {
     let next = input;
 
-    let (next, type_bracket, prev) = parse_type_bracket(next, prev)?;
-    let (next, _, prev) = parse_semicolon(next, prev)?;
+    let (next, patterns, prev) = parse_pattern(next, prev)?;
+    let (next, _, prev) = parse_arrow(next, prev)?;
     let (next, return_bracket, prev) = parse_return_bracket(next, prev)?;
     //let (next, _, prev) = parse_comma(next, prev)?;
 
 
     Ok(PMAst { })
+}
+
+fn parse_pattern<'a>(mut next : &'a [TokenTree], mut prev : Span) -> PResult<'a, Vec<Pattern>> {
+    let mut ps = vec![];
+
+    loop {
+        let x = parse_type_bracket(next, prev)?;
+        next = x.0;
+        let p = x.1;
+        prev = x.2;
+
+        let pattern = Pattern { p, nexts: vec![] };
+
+        ps.push(pattern);
+
+        match parse_semicolon(next, prev) {
+            Ok((n, _, p)) => { next = n; prev = p; },
+            Err(_) => { break; },
+        }
+    }
+
+    Ok((next, ps, prev))
 }
 
 fn parse_ident<'a>(input : &'a [TokenTree], prev : Span) -> PResult<'a, &'a TokenTree> {
@@ -79,7 +101,7 @@ atom!(x => [ (a, b) ] a, b; [ (c, d) ] c, d; [ x if x % 2 == 0 ] => { ret.push(x
 
 pattern_list = \[ rust_pattern [if boolean_expr] \] [ident_next_list] ; *
 
-p.or(p)
+p.or(p) 
 p.and(p)
 sub_list?
 call?
