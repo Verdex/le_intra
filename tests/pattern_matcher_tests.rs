@@ -6,5 +6,6 @@ mod test {
     #[test]
     fn should() {
         pattern_matcher!([ (a, b) ]; [ (c, d) ] => { (a, b, c, d) });
+        pattern_matcher!([ (a, b) ] a, b; [ (c, d) ] c => { (a, b, c, d) });
     }
 }

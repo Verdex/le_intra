@@ -28,7 +28,12 @@ fn parse_pattern<'a>(mut next : &'a [TokenTree], mut prev : Span) -> PResult<'a,
         let p = x.1;
         prev = x.2;
 
-        let pattern = Pattern { p, nexts: vec![] };
+        let x = parse_ident_list(next, prev)?;
+        next = x.0;
+        let nexts = x.1;
+        prev = x.2;
+
+        let pattern = Pattern { p, nexts };
 
         ps.push(pattern);
 
