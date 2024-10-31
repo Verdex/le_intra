@@ -41,9 +41,41 @@ fn parse_pattern<'a>(mut next : &'a [TokenTree], mut prev : Span) -> PResult<'a,
     Ok((next, ps, prev))
 }
 
-fn parse_ident<'a>(input : &'a [TokenTree], prev : Span) -> PResult<'a, &'a TokenTree> {
+fn parse_ident_list<'a>(mut next : &'a [TokenTree], mut prev : Span) -> PResult<'a, Vec<Box<str>>> {
+    let mut ids = vec![];
+
+    match parse_ident(next, prev) {
+        Ok((n, id, p)) => {
+            ids.push(id);
+            next = n;        
+            prev = p;
+        },
+        Err(_) => { 
+            return Ok((next, ids, prev));
+        },
+    }
+
+    loop {
+        match parse_comma(next, prev) {
+            Ok((n, _, p)) => {
+                next = n;        
+                prev = p;
+            },
+            Err(_) => { break; },
+        }
+
+        let x = parse_ident(next, prev)?;
+        next = x.0;
+        ids.push(x.1);
+        prev = x.2;
+    }
+
+    Ok((next, ids, prev))
+}
+
+fn parse_ident<'a>(input : &'a [TokenTree], prev : Span) -> PResult<'a, Box<str>> {
     match input {
-        [t @ TokenTree::Ident(_), rest @ ..] => Ok((rest, t, t.span())),
+        [t @ TokenTree::Ident(_), rest @ ..] => Ok((rest, t.to_string().into(), t.span())),
         [x, ..] => Err(Error(x.span(), vec!["expected <ident>".into()])),
         [] => Err(Error(prev, vec!["unexpected end of stream".into()])),
     }
