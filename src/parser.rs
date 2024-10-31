@@ -12,11 +12,9 @@ pub (crate) fn parse_pattern_matcher(input : &[TokenTree], prev : Span) -> Resul
 
     let (next, patterns, prev) = parse_pattern(next, prev)?;
     let (next, _, prev) = parse_arrow(next, prev)?;
-    let (next, return_bracket, prev) = parse_return_bracket(next, prev)?;
-    //let (next, _, prev) = parse_comma(next, prev)?;
+    let (next, return_expr, prev) = parse_return_bracket(next, prev)?;
 
-
-    Ok(PMAst { })
+    Ok(PMAst { patterns, return_expr })
 }
 
 fn parse_pattern<'a>(mut next : &'a [TokenTree], mut prev : Span) -> PResult<'a, Vec<Pattern>> {

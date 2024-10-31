@@ -6,6 +6,8 @@ use proc_macro::*;
 use parser::Error;
 
 pub (crate) struct PMAst {
+    patterns : Vec<Pattern>,
+    return_expr : Box<str>,
 }
 
 pub (crate) struct Pattern {
