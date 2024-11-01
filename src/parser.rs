@@ -3,11 +3,11 @@ use super::{ PMAst, Pattern };
 
 use proc_macro::*;
 
-pub (crate) struct Error(pub (crate) Span, pub (crate) Vec<Box<str>>);
-pub (crate) type PResult<'a, T> = Result<(&'a [TokenTree], T, Span), Error>;
+pub struct Error(pub Span, pub Vec<Box<str>>);
+pub type PResult<'a, T> = Result<(&'a [TokenTree], T, Span), Error>;
 
 
-pub (crate) fn parse_pattern_matcher(input : &[TokenTree], prev : Span) -> Result<PMAst, Error> {
+pub fn parse_pattern_matcher(input : &[TokenTree], prev : Span) -> Result<PMAst, Error> {
     let next = input;
 
     let (next, patterns, prev) = parse_pattern(next, prev)?;
