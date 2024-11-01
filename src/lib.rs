@@ -1,5 +1,6 @@
 
 mod parser;
+mod code_gen;
 
 use proc_macro::*;
 
