@@ -19,11 +19,15 @@ pub fn generate(input : PMAst) -> Box<str> {
 
     let x = matches.pop().unwrap();
     // Note:  Last nexts aren't meaningful
-    let mut end = x.0;
+    let mut end = x.0.replace("%expr", &input.return_expr);
     while let Some((code, nexts)) = matches.pop() {
-        end = nexts.iter().map(|x| code.replace("%expr", &end).replace("%input", x) )
+        /*end = nexts.iter().map(|x| code.replace("%expr", &end).replace("%input", x) )
                           .collect::<Vec<_>>()
-                          .join("\n");
+                          .join("\n");*/
+        let inner_expr = nexts.iter().map(|x| end.replace("%input", x) )
+                                     .collect::<Vec<_>>()
+                                     .join("\n");
+        end = code.replace("%expr", &inner_expr); 
     }
 
     end.into()
@@ -43,7 +47,7 @@ mod test {
 
     #[test]
     fn blarg() {
-        let input = pat_mat([pat("(x, y)", &["x", "y"]), pat("(a, c)", &["a", "c"]), pat("(b, d)", &[])], "(a, b)");
+        let input = pat_mat([pat("(x, y)", &["x", "y"]), pat("(a, c)", &["a", "c"]), pat("(b, d)", &[])], "final");
         let output = generate(input);
         assert!(false, "{}", output);
     }
