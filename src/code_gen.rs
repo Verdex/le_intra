@@ -21,9 +21,6 @@ pub fn generate(input : PMAst) -> Box<str> {
     // Note:  Last nexts aren't meaningful
     let mut end = x.0.replace("%expr", &input.return_expr);
     while let Some((code, nexts)) = matches.pop() {
-        /*end = nexts.iter().map(|x| code.replace("%expr", &end).replace("%input", x) )
-                          .collect::<Vec<_>>()
-                          .join("\n");*/
         let inner_expr = nexts.iter().map(|x| end.replace("%input", x) )
                                      .collect::<Vec<_>>()
                                      .join("\n");
