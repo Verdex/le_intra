@@ -27,7 +27,7 @@ pub fn generate(input : PMAst) -> Box<str> {
         end = code.replace("%expr", &inner_expr); 
     }
 
-    end.into()
+    format!("|input| {{ {} }}", end.replace("%input", "input")).into()
 }
 
 #[cfg(test)]
