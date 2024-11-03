@@ -34,7 +34,7 @@ pub fn pattern_matcher( input : TokenStream ) -> TokenStream {
 
             error_code.into_iter().collect()
         },
-        _ => "".parse().unwrap(),
+        Ok(ast) => code_gen::generate(ast).parse().unwrap(),
     }
 }
 
