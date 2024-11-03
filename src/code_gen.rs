@@ -17,9 +17,9 @@ pub fn generate(input : PMAst) -> Box<str> {
         .map(|pat| (format!(pattern_matcher_format!(), pat.p), &pat.nexts))
         .collect::<Vec<_>>();
 
-    let x = matches.pop().unwrap();
+    let last = matches.pop().unwrap();
     // Note:  Last nexts aren't meaningful
-    let mut end = x.0.replace("%expr", &input.return_expr);
+    let mut end = last.0.replace("%expr", &input.return_expr);
     while let Some((code, nexts)) = matches.pop() {
         let inner_expr = nexts.iter().map(|x| end.replace("%input", x) )
                                      .collect::<Vec<_>>()
