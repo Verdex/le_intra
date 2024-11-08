@@ -27,7 +27,12 @@ pub fn generate(input : PMAst) -> Box<str> {
         end = code.replace("%expr", &inner_expr); 
     }
 
-    format!("|input| {{ {} }}", end.replace("%input", "input")).into()
+    let func = format!("|input| {{ {} }}", end.replace("%input", "input"));
+
+    let indices = input.patterns.iter().map(|x| format!("{}", x.nexts.len())).collect::<Vec<_>>().join(", ");
+    let indices = format!("vec![ {} ]", indices);
+
+    format!( "( {}, {} )", func, indices ).into()
 }
 
 #[cfg(test)]
